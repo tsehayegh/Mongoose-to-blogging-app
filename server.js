@@ -4,18 +4,33 @@
 const bodyParser = require('body-parser');
 const express = require('express');
 
-
 //Mongoose
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
 //import config.js
-const {PORT, DATABASE_URL} = require('./config');
-const {blogPost} = require('./models');
+const { PORT, DATABASE_URL } = require('./config');
+
+const { blogPost } = require('./models');
 
 const app = express();
 app.use(bodyParser.json());
 
+app.get('/blogPosts', (req, res) => {
+  blogPost
+    .find()
+    .limit(10)
+    .then(blogPosts => {
+      res.json({
+        blogPosts: blogPosts.map(
+          (blogpost) => blogpost.serialize())
+      });
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({message: 'Internet server error'});
+    })
+});
 
 let server;
 //run server
@@ -56,7 +71,7 @@ if(require.main === module) {
   runServer(DATABASE_URL).catch(err => console.error(err));
 }
 
-module.exports = {app, runServer, closeServer};
+module.exports = { app, runServer, closeServer };
 
 
 

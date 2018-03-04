@@ -1,5 +1,5 @@
 {
-  "name": "blog-api",
+  "name": "mongoose-to-blogging-app",
   "version": "1.0.0",
   "description": "BlogPosts model",
   "main": "server.js",
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tsehayegh/blog-api"
+    "url": "git+https://github.com/tsehayegh/Mongoose-to-blogging-api"
   },
   "author": "Tsehaye",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/tsehayegh/blog-api/issues"
+    "url": "https://github.com/tsehayegh/Mongoose-to-blogging-api/issues"
   },
-  "homepage": "https://github.com/tsehayegh/blog-api#readme",
+  "homepage": "https://github.com/tsehayegh/Mongoose-to-blogging-api#readme",
   "dependencies": {
     "body-parser": "^1.18.2",
     "express": "^4.16.2",

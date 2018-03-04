@@ -3,7 +3,7 @@
 const mongoose = require('mongoose');
 
 //schema to represent a blog post
-const blogPostSchedma = mongoose.Schema({
+const blogPostsSchedma = mongoose.Schema({
   title: {type: String, required: true},
   author: {
     firstName: {type: String, required: true},
@@ -12,11 +12,11 @@ const blogPostSchedma = mongoose.Schema({
   content: {type: String, required: true}
 });
 
-blogPostSchedma.virtudal('fullName').get(function(){
+blogPostsSchedma.virtual('fullName').get(function(){
   return `${this.firstName} ${this.lastName}`.trim();
 });
 
-blogPostSchedma.methods.serialize = function() {
+blogPostsSchedma.methods.serialize = function() {
   return {
     id: this._id,
     title: this.title,
@@ -24,5 +24,6 @@ blogPostSchedma.methods.serialize = function() {
   };
 };
 
-const blogPost = mongoose.model('blogPost', blogPostSchedma);
-model.exports ={blogPost};
+//Create and export blogPosts model
+const blogPost = mongoose.model('blogPost', blogPostsSchedma);
+module.exports ={blogPost};
