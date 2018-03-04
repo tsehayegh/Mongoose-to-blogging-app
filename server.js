@@ -1,44 +1,67 @@
+
+'use strict';
+
+const bodyParser = require('body-parser');
 const express = require('express');
 
-const blogPosts = require('./blogPostsRouter');
 
-const morgan = require('morgan')
+//Mongoose
+const mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
+
+//import config.js
+const {PORT, DATABASE_URL} = require('./config');
+const {blogPost} = require('./models');
 
 const app = express();
+app.use(bodyParser.json());
 
-app.use(morgan('common'));
 
-app.use('/blogPosts', blogPosts);
 let server;
-
-function runServer() {
-  const port = process.env.PORT || 8080;
+//run server
+function runServer(databaseUrl, port = PORT){
   return new Promise((resolve, reject) => {
-    server = app.listen(port, () => {
-      console.log(`Your app is listening on port ${port}`);
-      resolve(server);
-    }).on('error', err => {
-      reject(err)
-    });
-  });
-}
-
-function closeServer() {
-  return new Promise((resolve, reject) => {
-    console.log('Closing server');
-    server.close(err => {
+    mongoose.connect(databaseUrl, err => {
       if (err) {
-        reject(err);
-        // so we don't also call `resolve()`
-        return;
+        return reject(err);
       }
-      resolve();
+      server = app.listen(port, () => {
+        console.log(`Your app is listening on port ${port}`);
+        resolve();
+      })
+      .on('error', err => {
+        mongoose.disconnect();
+        reject(err);
+      });
     });
   });
-}
-
-if (require.main === module) {
-  runServer().catch(err => console.error(err));
 };
 
+//close server
+function closeServer(){
+  return mongoose.disconnect().then(() => {
+    return new Promise((resolve, reject) => {
+      console.log('Closing server');
+      server.clse(err => {
+        if(err){
+          return reject(err);
+        }
+        resolve();
+      });
+    });
+  });
+}
+
+if(require.main === module) {
+  runServer(DATABASE_URL).catch(err => console.error(err));
+}
+
 module.exports = {app, runServer, closeServer};
+
+
+
+
+
+
+
+
